@@ -1,0 +1,16 @@
+{
+  "name": "tape-diagram",
+  "version": "1.0.0",
+  "private": true,
+  "description": "おはなしを図にしよう：絵・○図・テープ図・線分図・割合・比の算数教材",
+  "scripts": {
+    "start": "node scripts/serve.cjs",
+    "test": "node scripts/run-qa.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
