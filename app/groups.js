@@ -29,10 +29,12 @@
       const w=720/count;for(let i=0;i<count;i++)s.append(sv('rect',{x:90+i*w,y:130,width:w,height:50,class:'groupTape'}));
       range(s,'a',90,90+w,198,true);
     }else{
-      s.append(sv('rect',{x:90,y:130,width:180,height:50,class:'groupTape'}),sv('rect',{x:630,y:130,width:180,height:50,class:'groupTape'}),sv('text',{x:450,y:164,'text-anchor':'middle',class:'groupText'},'…'));
-      range(s,'a',90,270,198,true);
+      // Keep the whole and one-unit sample separate: even one or two groups
+      // must remain possible, without an apparent number of repeated boxes.
+      s.append(sv('rect',{x:90,y:130,width:720,height:50,class:'groupTape'}),sv('rect',{x:90,y:205,width:180,height:40,class:'groupTape'}),sv('text',{x:450,y:164,'text-anchor':'middle',class:'groupText'},'…'));
+      range(s,'a',90,270,270,true);
     }
-    range(s,'total',90,810,108,false);range(s,'b',90,810,270,true);$('figure').replaceChildren(s);
+    range(s,'total',90,810,108,false);range(s,'b',90,810,count?270:198,true);$('figure').replaceChildren(s);
   }
   function render(){
     $('tools').replaceChildren();$('figure').replaceChildren();$('check').hidden=stage!==2;
@@ -46,7 +48,7 @@
       s.append(sv('rect',{x:90,y:130,width:end-90,height:50,class:'groupTape'}),sv('path',{d:`M 90 108 Q ${(90+end)/2} 80 ${end} 108`,class:'groupArc'}),sv('text',{x:(90+end)/2,y:80,'text-anchor':'middle',class:'groupText'},label(initial)));$('figure').append(s);
       button('まとまりを 図にする',()=>{stage=2;say('');render();});
     }else{
-      $('prompt').textContent='弧に、名前と数を置こう';$('hint').textContent=lesson.unknown==='b'?'「…」は省略。見えている枠の数を、お皿の数と思わないようにしよう。':'一皿分と、皿の数と、ぜんぶ。それぞれの単位も見よう。';
+      $('prompt').textContent='弧に、名前と数を置こう';$('hint').textContent=lesson.unknown==='b'?'上はぜんぶ、下の短いテープは一皿分の見本。「…」は省略。枠や長さから皿の数は読み取りません。':'一皿分と、皿の数と、ぜんぶ。それぞれの単位も見よう。';
       for(const role of ['a','b','total']){const b=button(label(role),()=>{selected=role;render();say('対応する弧をえらぼう。');},role);if(selected===role)b.className='selected';}
       figure();
     }

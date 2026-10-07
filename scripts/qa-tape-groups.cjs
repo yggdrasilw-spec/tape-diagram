@@ -14,6 +14,13 @@ assert.equal(G.validate(data).total,12);assert.throws(()=>G.validate({...data,a:
   assert((await page.locator('#figure').textContent()).includes('□'));await page.locator('#check').click();assert((await page.locator('#status').textContent()).includes('つながった'));
  }
  fs.mkdirSync(outputDir,{recursive:true});await page.screenshot({path:path.join(outputDir,'groups-unknown-count.png'),fullPage:true});
+ // The sample diagram does not imply a minimum of two groups.
+ for(const count of [1,2,12]){
+  await page.locator('#groupsSettings details').evaluate(n=>n.open=true);await page.locator('#groupsB').fill(String(count));await page.locator('#groupsSettings button[type=submit]').click();
+  await page.getByRole('button',{name:'ぜんぶから',exact:true}).click();await page.getByRole('button',{name:'まとまりを 図にする',exact:true}).click();
+  assert.equal(await page.locator('.groupTape').count(),2);assert.deepEqual(await page.locator('.groupTape').evaluateAll(nodes=>nodes.map(n=>[n.getAttribute('y'),n.getAttribute('width')])),[['130','720'],['205','180']]);
+ }
+ await page.locator('#groupsSettings details').evaluate(n=>n.open=false);
  await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:path.join(outputDir,'groups-mobile.png'),fullPage:true});
  assert.deepEqual(errors,[]);console.log(JSON.stringify({passed:true,multiply:true,equalSharing:true,grouping:true,unknownCountHidden:true,keyboard:true,mobile:true}));
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
