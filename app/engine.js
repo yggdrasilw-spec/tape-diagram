@@ -18,6 +18,13 @@
     m.typeName=typeNames[m.kind];
     m.names=m.kind==='increase'?{left:'はじめ',right:m.nameB,total:'ぜんぶ'}:m.kind==='decrease'?{left:m.nameA,right:'のこり',total:'はじめ'}:m.kind==='compare'?{left:m.nameA,right:'ちがい',total:m.nameB}:{left:m.nameA,right:m.nameB,total:'ぜんぶ'};
     m.start=m.kind==='decrease'||m.kind==='compare'?'total':'left';
+    if(data.quantityNames){
+      for(const role of ['left','right','total']){
+        const name=data.quantityNames[role];
+        if(typeof name!=='string'||!name.trim()||name.length>80)throw Error('量の名前を確認してください。');
+      }
+      m.names={...data.quantityNames};
+    }
     m.display=(role,reveal=false)=>m.unknown===role&&!reveal?'□':String(m[role]);
     m.label=(role,reveal=false)=>`${m.names[role]} ${m.display(role,reveal)}${m.unit}`;
     m.equation=m.unknown==='total'?`${m.left} ＋ ${m.right} ＝ ${m.total}`:m.unknown==='left'?`${m.total} − ${m.right} ＝ ${m.left}`:`${m.total} − ${m.left} ＝ ${m.right}`;
